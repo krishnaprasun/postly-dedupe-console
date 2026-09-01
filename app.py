@@ -10,7 +10,7 @@ Why review at all: the detector is perceptual, and one class of false positive i
 known and real -- daily darshan art that differs only in a small date stamp
 (7-7-2026 vs 8-7-2026). Those clusters are flagged DATE-VARIANT and sorted last.
 """
-import csv, io, json, os, functools, hmac
+import csv, io, json, os, functools, hmac, secrets
 from pathlib import Path
 from flask import (Flask, render_template, request, redirect, url_for, jsonify,
                    send_from_directory, Response, abort)
@@ -31,8 +31,14 @@ def _load_users():
             u, pw = u.strip(), pw.strip()
             if u and pw: users[u] = pw
     if not users:
-        users = {os.environ.get("DEDUPE_USER", "postly"):
-                 os.environ.get("DEDUPE_PASS", "dedupe2026")}
+        # No published default: this repo is public, so a hardcoded password would
+        # be a published password. Generate one per boot for local dev, and refuse
+        # to run wide open anywhere that looks like a real deploy.
+        if os.environ.get("RENDER") or os.environ.get("DEDUPE_REQUIRE_USERS"):
+            raise SystemExit("DEDUPE_USERS is not set - refusing to start without logins")
+        pw = secrets.token_urlsafe(12)
+        print(f"\n  [dev login]  user: dev   password: {pw}\n", flush=True)
+        users = {"dev": pw}
     return users
 
 USERS = _load_users()
