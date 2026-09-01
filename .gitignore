@@ -4,3 +4,4 @@ __pycache__/
 .pgurl_internal
 server.log
 data/decisions.db
+.reviewers
