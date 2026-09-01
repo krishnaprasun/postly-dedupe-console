@@ -52,6 +52,23 @@ BACKGROUNDS = _D["backgrounds"]
 BY_ID = {c["id"]: c for c in CLUSTERS}
 db.init()
 
+@app.after_request
+def _no_edge_cache(r):
+    """Never let the CDN cache this app.
+
+    Everything here is behind a login and reviewer-specific, so a cached response
+    is wrong by definition. It also caused a real outage: 404s served during the
+    deploy window (before any backend existed) were cached at the edge, and ~40%
+    of later requests were answered from that stale cache instead of the app.
+    Frames are immutable, so they may be cached privately by the browser.
+    """
+    if r.status_code == 200 and request.path.startswith("/f/"):
+        r.headers["Cache-Control"] = "private, max-age=86400"
+    else:
+        r.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, private"
+        r.headers["Pragma"] = "no-cache"
+    return r
+
 def auth(f):
     @functools.wraps(f)
     def w(*a, **k):
