@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Postly Dedupe{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body>
+<nav>
+  <a class="brand" href="{{ url_for('queue') }}">Postly Dedupe</a>
+  <a href="{{ url_for('queue', f='pending') }}">Queue</a>
+  <a href="{{ url_for('backgrounds') }}">Background reuse</a>
+  <a href="{{ url_for('execute') }}">Removal</a>
+</nav>
+<main>{% block body %}{% endblock %}</main></body></html>

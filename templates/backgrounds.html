@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block body %}
+<h1>Background reuse</h1>
+<p class="notice">This is <b>not</b> duplication and nothing here can be removed. These are
+distinct statuses that share the same stock footage. It is very likely what users mean when
+they say the app repeats itself — the fix is sourcing diversity and a reuse cap, not deletion.</p>
+<p><b>{{ videos }}</b> videos across <b>{{ total }}</b> distinct backgrounds.</p>
+<table>
+<tr><th>Background</th><th>Videos using it</th><th>Subcategories</th></tr>
+{% for b in bgs %}
+<tr><td>{{ b.id }}</td><td><b>{{ b.count }}</b></td><td class="small">{{ b.subs }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% block body %}
+<h1>Removal</h1>
+{% if error %}<p class="err">{{ error }}</p>{% endif %}
+<p>Mode: <b>{{ mode }}</b>
+{% if mode=='export' %}<span class="muted">— generates a manifest for you to apply. Nothing is
+written to the master sheet or the app.</span>{% endif %}</p>
+<p><b>{{ n }}</b> rows are queued for removal, from confirmed clusters only.</p>
+{% if n %}
+<form method="post" class="exec">
+  <p>Type <code>REMOVE</code> to generate the manifest.</p>
+  <input name="confirm_text" autocomplete="off" placeholder="REMOVE">
+  <button class="b danger">Run</button>
+</form>
+<table>
+<tr><th>Cluster</th><th>Row</th><th>Subcategory</th><th>Vendor</th><th>Keeps row</th><th>Engagement lost</th></tr>
+{% for p in plan %}
+<tr><td>{{ p.cluster }}</td><td>{{ p.sheet_row }}</td><td>{{ p.subcategory }}</td>
+    <td>{{ p.vendor }}</td><td>{{ p.keeper_row }}</td>
+    <td>{{ p.shares }}s / {{ p.downloads }}d</td></tr>
+{% endfor %}
+</table>
+{% if n > 100 %}<p class="muted">Showing first 100 of {{ n }}.</p>{% endif %}
+{% else %}<p class="muted">Nothing confirmed yet.</p>{% endif %}
+<h2>Run history</h2>
+<table><tr><th>When</th><th>Mode</th><th>Rows</th><th>Detail</th></tr>
+{% for r in runs %}<tr><td>{{ r.ts|int }}</td><td>{{ r.mode }}</td><td>{{ r.rows }}</td><td>{{ r.detail }}</td></tr>{% endfor %}
+</table>
+{% endblock %}

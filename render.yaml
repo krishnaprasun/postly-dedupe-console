@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: postly-dedupe-console
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postly-dedupe-db
+          property: connectionString
+      - key: DEDUPE_EXEC_MODE
+        value: export
+      - key: DEDUPE_USERS
+        sync: false

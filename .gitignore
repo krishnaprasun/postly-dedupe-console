@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pgurl
+.pgurl_internal
+server.log
+data/decisions.db
